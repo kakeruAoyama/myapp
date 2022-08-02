@@ -27,6 +27,9 @@ class ReservationsController < ApplicationController
       if @reservation.save
         format.html { redirect_to reservation_url(@reservation), notice: "Reservation was successfully created." }
         format.json { render :show, status: :created, location: @reservation }
+        params[:attendees].split(",").each do |attendee|
+          Attendee.create(member_id: attendee, reservation_id: @reservation.id)
+        end
       else
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @reservation.errors, status: :unprocessable_entity }
@@ -40,6 +43,10 @@ class ReservationsController < ApplicationController
       if @reservation.update(reservation_params)
         format.html { redirect_to reservation_url(@reservation), notice: "Reservation was successfully updated." }
         format.json { render :show, status: :ok, location: @reservation }
+        @reservation.attendees.destroy_all
+        params[:attendees].split(",").each do |attendee|
+          Attendee.create(member_id: attendee, reservation_id: @reservation.id)
+        end
       else
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @reservation.errors, status: :unprocessable_entity }
