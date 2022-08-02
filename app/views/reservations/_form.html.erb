@@ -22,14 +22,22 @@
   </div>
 
   <div class="my-5">
-    <select id="select" >
+    <div id="selected_member_names"></div>
+    <input type="text" id="serch_box" placeholder="名前で検索" class="block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full">
+    <div id="selectable-options"></div>
+
+    <select id="select" class="hidden">
       <% Member.all.each do |m| %>
         <option value=<%= m.id%>><%= m.name %></option>
       <% end %>
     </select>
+
+    <%= text_field_tag :attendees, @reservation.attendees.pluck(:member_id).join(",") + ",", class:"hidden" %>
   </div>
 
   <div class="inline">
     <%= form.submit class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
   </div>
 <% end %>
+
+<%= javascript_import_module_tag "attendee" %>
